@@ -10,43 +10,57 @@ export const processAndStoreUsers = async (fileBuffer) => {
   if (data.length === 0) {
     throw new Error("Excel file is empty or has an invalid format.");
   }
-  const validatedData = data.filter(
+
+  const potentiallyValidData = data.filter(
     (row) => row.Name && row.Email && row.ContactNumber
   );
-  const emailsInFile = validatedData.map((user) => user.Email);
-  const contactsInFile = validatedData.map((user) =>
+  const emailsInFile = potentiallyValidData.map((user) => user.Email);
+  const contactsInFile = potentiallyValidData.map((user) =>
     String(user.ContactNumber)
   );
+
   const existingUsersQuery = await pool.query(
     "SELECT email, contact_number FROM users WHERE email = ANY($1::text[]) OR contact_number = ANY($2::text[])",
     [emailsInFile, contactsInFile]
   );
+
   const existingEmailsInDB = new Set(
     existingUsersQuery.rows.map((u) => u.email)
   );
   const existingContactsInDB = new Set(
     existingUsersQuery.rows.map((u) => u.contact_number)
   );
-  const duplicates = [];
+
   const usersToInsert = [];
+  const duplicates = [];
+  const invalidRows = [];
+
   const seenInFileEmails = new Set();
   const seenInFileContacts = new Set();
 
-  validatedData.forEach((user) => {
-    const contactStr = String(user.ContactNumber);
+  for (const row of data) {
+    if (!row.Name || !row.Email || !row.ContactNumber) {
+      invalidRows.push({
+        ...row,
+        reason: "Missing Name, Email, or Contact Number",
+      });
+      continue;
+    }
+
+    const contactStr = String(row.ContactNumber);
     if (
-      existingEmailsInDB.has(user.Email) ||
+      existingEmailsInDB.has(row.Email) ||
       existingContactsInDB.has(contactStr) ||
-      seenInFileEmails.has(user.Email) ||
+      seenInFileEmails.has(row.Email) ||
       seenInFileContacts.has(contactStr)
     ) {
-      duplicates.push(user);
+      duplicates.push(row);
     } else {
-      usersToInsert.push(user);
-      seenInFileEmails.add(user.Email);
+      usersToInsert.push(row);
+      seenInFileEmails.add(row.Email);
       seenInFileContacts.add(contactStr);
     }
-  });
+  }
 
   if (usersToInsert.length > 0) {
     const client = await pool.connect();
@@ -58,6 +72,7 @@ export const processAndStoreUsers = async (fileBuffer) => {
         const userValues = [user.Name, user.Email, String(user.ContactNumber)];
         const res = await client.query(userInsertQuery, userValues);
         const userId = res.rows[0].id;
+
         const userDetailsInsertQuery =
           "INSERT INTO user_details (user_id, age, gender, location) VALUES ($1, $2, $3, $4)";
         const userDetailsValues = [
@@ -76,7 +91,8 @@ export const processAndStoreUsers = async (fileBuffer) => {
       client.release();
     }
   }
-  return { insertedCount: usersToInsert.length, duplicates };
+
+  return { insertedCount: usersToInsert.length, duplicates, invalidRows };
 };
 
 export const fetchUsersWithFilters = async (filters) => {

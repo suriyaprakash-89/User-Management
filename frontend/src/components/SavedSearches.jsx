@@ -80,21 +80,18 @@ const SavedSearches = ({
     <div className={containerClasses}>
       {isMobileView && (
         <div className="flex justify-center items-center relative pb-2 border-b border-slate-200">
-          {" "}
-          <div className="w-10 h-1.5 bg-slate-300 rounded-full" />{" "}
+          <div className="w-10 h-1.5 bg-slate-300 rounded-full" />
           <button
             onClick={closeDrawer}
             className="absolute right-0 top-0 text-slate-500 hover:text-slate-800"
           >
-            {" "}
-            <XMarkIcon className="h-6 w-6" />{" "}
-          </button>{" "}
+            <XMarkIcon className="h-6 w-6" />
+          </button>
         </div>
       )}
       <div className="flex items-center space-x-2">
-        {" "}
-        <BookmarkSquareIcon className="h-6 w-6 text-indigo-600" />{" "}
-        <h2 className="text-xl font-semibold text-slate-800">Saved Searches</h2>{" "}
+        <BookmarkSquareIcon className="h-6 w-6 text-indigo-600" />
+        <h2 className="text-xl font-semibold text-slate-800">Saved Searches</h2>
       </div>
       <form onSubmit={handleSave} className="space-y-2">
         <input
@@ -108,12 +105,10 @@ const SavedSearches = ({
           type="submit"
           className="w-full flex justify-center items-center space-x-2 bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors font-semibold"
         >
-          {" "}
-          <ArrowDownTrayIcon className="h-5 w-5" /> <span>Save Search</span>{" "}
+          <ArrowDownTrayIcon className="h-5 w-5" /> <span>Save Search</span>
         </button>
       </form>
       <div className="border-t border-slate-200 pt-4">
-        
         <motion.ul layout className="space-y-2 max-h-60 overflow-y-auto">
           {searches.length > 0 ? (
             searches.map((search) => (

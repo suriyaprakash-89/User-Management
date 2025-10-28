@@ -315,7 +315,7 @@ const SearchBar = ({ onSearch, initialFilters }) => {
             onClick={handleExport}
             className="flex items-center space-x-2 text-indigo-600 font-semibold hover:text-indigo-800 transition-colors"
           >
-            <ArrowDownOnSquareIcon className="h-5 w-5" />{" "}
+            <ArrowDownOnSquareIcon className="h-5 w-5" />
             <span>Export Current Results to CSV</span>
           </button>
         </div>

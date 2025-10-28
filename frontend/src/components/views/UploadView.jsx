@@ -57,12 +57,12 @@ const FileUpload = ({ onUploadSuccess }) => {
 
     try {
       const response = await uploadFile(formData);
-      const { insertedCount, duplicates } = response.data;
+      const { insertedCount, duplicates, invalidRows } = response.data;
 
       toast.dismiss(toastId);
       toast.success(`${insertedCount} user(s) imported successfully.`);
 
-      setUploadResult({ insertedCount, duplicates });
+      setUploadResult({ insertedCount, duplicates, invalidRows });
 
       onUploadSuccess();
     } catch (err) {
@@ -80,7 +80,7 @@ const FileUpload = ({ onUploadSuccess }) => {
       </h2>
       <p className="text-sm text-slate-500 mb-4">
         Select a .xlsx or .xls file. The system will automatically detect and
-        skip duplicate entries.
+        skip duplicate and invalid entries.
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -98,7 +98,7 @@ const FileUpload = ({ onUploadSuccess }) => {
           <div className="flex flex-col items-center justify-center pointer-events-none">
             <ArrowUpTrayIcon className="w-12 h-12 mx-auto text-slate-400" />
             <span className="mt-2 block font-semibold text-slate-600">
-              Drag & drop a file here or{" "}
+              Drag & drop a file here or
               <span className="text-indigo-600">click to browse</span>
             </span>
             <span className="mt-1 block text-xs text-slate-500">
@@ -113,7 +113,6 @@ const FileUpload = ({ onUploadSuccess }) => {
             className="sr-only"
           />
         </label>
-
         {file && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
@@ -135,13 +134,12 @@ const FileUpload = ({ onUploadSuccess }) => {
             </button>
           </motion.div>
         )}
-
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           type="submit"
           disabled={uploading || !file}
-          className="w-full flex justify-center items-center space-x-2 bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 disabled:bg-slate-400 disabled:cursor-not-allowed transition-colors"
+          className="w-full flex justify-center items-center space-x-2 bg-slate-800 text-white px-6 py-3 rounded-lg font-semibold hover:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 disabled:bg-slate-400 disabled:cursor-not-allowed transition-colors"
         >
           <span>{uploading ? "Processing..." : "Upload & Import"}</span>
         </motion.button>
@@ -164,6 +162,7 @@ const FileUpload = ({ onUploadSuccess }) => {
               </p>
             </div>
           </div>
+
           {uploadResult.duplicates && uploadResult.duplicates.length > 0 && (
             <div className="mt-4 p-4 bg-amber-50 rounded-lg border border-amber-200">
               <details open>
@@ -177,8 +176,36 @@ const FileUpload = ({ onUploadSuccess }) => {
                 <ul className="mt-3 pl-8 text-sm text-slate-600 list-disc space-y-1">
                   {uploadResult.duplicates.map((dup, index) => (
                     <li key={index}>
-                      <span className="font-medium">{dup.Name}</span> (
+                      <span className="font-medium">{dup.Name || "N/A"}</span> (
                       {dup.Email || dup.ContactNumber})
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            </div>
+          )}
+
+          {uploadResult.invalidRows && uploadResult.invalidRows.length > 0 && (
+            <div className="mt-4 p-4 bg-rose-50 rounded-lg border border-rose-200">
+              <details open>
+                <summary className="font-semibold text-rose-800 cursor-pointer flex items-center space-x-3">
+                  <XCircleIcon className="h-6 w-6 text-rose-500" />
+                  <span>
+                    {uploadResult.invalidRows.length} row(s) were invalid and
+                    skipped.
+                  </span>
+                </summary>
+                <ul className="mt-3 pl-8 text-sm text-slate-600 list-disc space-y-1">
+                  {uploadResult.invalidRows.map((row, index) => (
+                    <li key={index}>
+                      Row with name "
+                      <span className="font-medium">
+                        {row.Name || "Missing Name"}
+                      </span>
+                      " was skipped.
+                      <span className="text-xs text-rose-700 block">
+                        {row.reason}
+                      </span>
                     </li>
                   ))}
                 </ul>
@@ -198,5 +225,4 @@ const UploadView = ({ onUploadSuccess }) => {
     </div>
   );
 };
-
 export default UploadView;

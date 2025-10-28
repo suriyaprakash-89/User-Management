@@ -9,7 +9,7 @@ import {
 
 export const uploadUsers = async (req, res) => {
   if (!req.file) {
-    return res.status(400).json({ message: "No file uploaded." });
+    return res.status(400).json({ message: 'No file uploaded.' });
   }
   try {
     const result = await processAndStoreUsers(req.file.buffer);
@@ -17,12 +17,11 @@ export const uploadUsers = async (req, res) => {
       message: `${result.insertedCount} users imported successfully.`,
       insertedCount: result.insertedCount,
       duplicates: result.duplicates,
+      invalidRows: result.invalidRows 
     });
   } catch (error) {
-    console.error("Upload Error:", error);
-    res
-      .status(500)
-      .json({ message: "Failed to process file.", error: error.message });
+    console.error('Upload Error:', error);
+    res.status(500).json({ message: 'Failed to process file.', error: error.message });
   }
 };
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react"; // <-- Import useRef
 import { motion, AnimatePresence } from "framer-motion";
 import SearchBar from "../SearchBar";
 import UserGrid from "../UserGrid";
@@ -24,6 +24,9 @@ const ManageUsersView = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  // --- STEP 1: Create a ref to mark the top of the content area ---
+  const topOfGridRef = useRef(null);
 
   useEffect(() => {
     if (isDrawerOpen) {
@@ -75,14 +78,25 @@ const ManageUsersView = () => {
     setCurrentPage(1);
   };
 
-  const handlePageChange = (page) => setCurrentPage(page);
+  // --- STEP 3: Update the page change handler to include the scroll ---
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    // Smoothly scroll to the top of the grid
+    if (topOfGridRef.current) {
+      topOfGridRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
     <>
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <div className="lg:col-span-8 space-y-6 pb-24 lg:pb-0">
+        {/* --- STEP 2: Attach the ref to the main content container --- */}
+        <div
+          ref={topOfGridRef}
+          className="lg:col-span-8 space-y-6 pb-24 lg:pb-0"
+        >
           <SearchBar onSearch={handleFilterChange} initialFilters={filters} />
-          <div className="px-2 rounded-xl shadow-sm">
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
             <UserGrid users={users} loading={loading} error={error} />
           </div>
           <Pagination

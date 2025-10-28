@@ -35,8 +35,8 @@ const getColorFromName = (name) => {
 
 const containerVariants = {
   hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.07 } },
-};
+  visible: { opacity: 1, transition: { staggerChildren: 0.05 } },
+}; // Slightly faster stagger
 const cardVariants = {
   hidden: { y: 20, opacity: 0 },
   visible: { y: 0, opacity: 1 },
@@ -60,11 +60,13 @@ const UserCardSkeleton = () => (
 const UserCard = ({ user }) => (
   <motion.div
     variants={cardVariants}
+    // --- HIGH-PERFORMANCE HOVER ANIMATION ---
+    // We only animate scale (transform) and let CSS handle the border color. No shadow animation.
     whileHover={{
       scale: 1.03,
-      transition: { type: "spring", stiffness: 400, damping: 15 },
+      transition: { type: "spring", stiffness: 300, damping: 20 },
     }}
-    className="bg-white rounded-xl shadow-sm border border-slate-200 hover:shadow-lg hover:border-slate-400 transition-all duration-300 p-4 flex items-center space-x-4 cursor-pointer"
+    className="bg-white rounded-xl shadow-sm border border-slate-200 hover:border-indigo-500 transition-colors duration-200 p-4 flex items-center space-x-4 cursor-pointer"
   >
     <div
       className={`w-12 h-12 rounded-full flex-shrink-0 ${getColorFromName(

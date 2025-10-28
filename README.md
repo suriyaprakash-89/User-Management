@@ -1,4 +1,4 @@
-# Fluxion Systems - User Management Platform
+# Fluxion Systems - User Management System
 
 This project is my submission for the Fluxion Systems internship assessment. It's a full-stack application built with React, Node.js, and PostgreSQL that allows for importing, managing, and searching user data from an Excel file.
 

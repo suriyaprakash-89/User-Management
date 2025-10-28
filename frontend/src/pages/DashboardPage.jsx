@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ManageUsersView from "../components/views/ManageUsersView";
 import UploadView from "../components/views/UploadView";
@@ -6,17 +6,16 @@ import { UsersIcon, ArrowUpTrayIcon } from "@heroicons/react/24/outline";
 
 const tabs = [
   { id: "upload", label: "Upload Data", icon: ArrowUpTrayIcon },
-  { id: "manage", label: "Manage Users", icon: UsersIcon },
+  { id: "manage", label: "Manage Users", icon: UsersIcon }
+  
 ];
 
 const DashboardPage = () => {
   const [activeTab, setActiveTab] = useState("manage");
   const [refreshKey, setRefreshKey] = useState(0);
-
-  const handleUploadSuccess = () => {
-    setActiveTab("manage");
+  const handleUploadSuccess = useCallback(() => {
     setRefreshKey((prevKey) => prevKey + 1);
-  };
+  }, []);
 
   return (
     <div className="w-full">
@@ -44,7 +43,6 @@ const DashboardPage = () => {
           ))}
         </nav>
       </div>
-
       <AnimatePresence mode="wait">
         <motion.div
           key={activeTab}

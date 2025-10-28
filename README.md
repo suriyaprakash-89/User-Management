@@ -3,23 +3,24 @@
 This project is my submission for the Fluxion Systems internship assessment. It's a full-stack application built with React, Node.js, and PostgreSQL that allows for importing, managing, and searching user data from an Excel file.
 
 ## 🧩 Version
+
 v1.0.0 — October 2025
 
 ### Core Features
 
-* **Excel Data Import:** Seamlessly upload `.xlsx` files with user data.
-* **Duplicate Handling:** Prevents duplicate entries based on email or contact number.
-* **Dynamic Data Grid:** A clean, responsive card grid for displaying users.
-* **Advanced Search & Sort:** Full-text search and filtering, with options to sort the results.
-* **Pagination:** Handles large datasets efficiently with server-side pagination.
-* **Saved Searches:** Save and re-apply common filter combinations.
-* **Export to CSV:** Export the currently filtered view to a `.csv` file.
+- **Excel Data Import:** Seamlessly upload `.xlsx` files with user data.
+- **Duplicate Handling:** Prevents duplicate entries based on email or contact number.
+- **Dynamic Data Grid:** A clean, responsive card grid for displaying users.
+- **Advanced Search & Sort:** Full-text search and filtering, with options to sort the results.
+- **Pagination:** Handles large datasets efficiently with server-side pagination.
+- **Saved Searches:** Save and re-apply common filter combinations.
+- **Export to CSV:** Export the currently filtered view to a `.csv` file.
 
 ### Tech Stack
 
-* **Backend:** Node.js, Express, PostgreSQL
-* **Frontend:** React (Vite), TailwindCSS, Framer Motion
-* **Database:** PostgreSQL
+- **Backend:** Node.js, Express, PostgreSQL
+- **Frontend:** React (Vite), TailwindCSS, Framer Motion
+- **Database:** PostgreSQL
 
 ---
 
@@ -107,11 +108,14 @@ The Excel file you upload should have the following headers (case-insensitive):
 ---
 
 ## 📦 Quick Start
-```bash
+
+````bash
 git clone <your-repo-url>
 cd FSYS_TASKS
 cd backend && npm install
 cd ../frontend && npm install
+
+---
 
 ### How to Run Locally
 
@@ -127,7 +131,8 @@ cd ../frontend && npm install
 
    ```bash
    createdb -U postgres fluxion_assessment
-   ```
+````
+
 2. Navigate to the `backend` directory and run the schema script to create the tables:
 
    ```bash
@@ -191,9 +196,9 @@ I really enjoyed building this project and went beyond the core requirements to 
 
 If I had more time, here are a few things I'd consider adding:
 
-* **User Authentication:** Adding a login system (e.g., with JWT) to secure the platform.
-* **In-line Editing:** Allowing an admin to click on a user card to edit details directly in the UI.
-* **More Robust Validation:** Using a schema validation library like Zod on the backend for more detailed error messages on upload.
+- **User Authentication:** Adding a login system (e.g., with JWT) to secure the platform.
+- **In-line Editing:** Allowing an admin to click on a user card to edit details directly in the UI.
+- **More Robust Validation:** Using a schema validation library like Zod on the backend for more detailed error messages on upload.
 
 ---
 

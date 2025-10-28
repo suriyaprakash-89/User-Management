@@ -115,8 +115,6 @@ cd FSYS_TASKS
 cd backend && npm install
 cd ../frontend && npm install
 
----
-
 ### How to Run Locally
 
 #### Prerequisites

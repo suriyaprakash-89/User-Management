@@ -7,6 +7,8 @@ import {
   MapPinIcon,
   UserIcon,
   DocumentMinusIcon,
+  PencilIcon,
+  TrashIcon,
 } from "@heroicons/react/24/outline";
 
 const getInitials = (name) => {
@@ -17,6 +19,7 @@ const getInitials = (name) => {
   }
   return name[0].toUpperCase();
 };
+
 const professionalColors = [
   "bg-sky-600",
   "bg-emerald-600",
@@ -25,6 +28,7 @@ const professionalColors = [
   "bg-violet-600",
   "bg-slate-600",
 ];
+
 const getColorFromName = (name) => {
   if (!name) return professionalColors[0];
   const charCodeSum = name
@@ -36,7 +40,7 @@ const getColorFromName = (name) => {
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1, transition: { staggerChildren: 0.05 } },
-}; // Slightly faster stagger
+};
 const cardVariants = {
   hidden: { y: 20, opacity: 0 },
   visible: { y: 0, opacity: 1 },
@@ -44,30 +48,42 @@ const cardVariants = {
 
 const UserCardSkeleton = () => (
   <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
-    {" "}
     <div className="flex items-center space-x-4">
-      {" "}
-      <Skeleton circle height={48} width={48} />{" "}
+      <Skeleton circle height={48} width={48} />
       <div className="w-full space-y-2">
-        {" "}
-        <Skeleton height={20} width="60%" />{" "}
-        <Skeleton height={14} width="80%" />{" "}
-      </div>{" "}
-    </div>{" "}
+        <Skeleton height={20} width="60%" />
+        <Skeleton height={14} width="80%" />
+      </div>
+    </div>
   </div>
 );
 
-const UserCard = ({ user }) => (
+const UserCard = ({ user, onEdit, onDelete }) => (
   <motion.div
     variants={cardVariants}
-    // --- HIGH-PERFORMANCE HOVER ANIMATION ---
-    // We only animate scale (transform) and let CSS handle the border color. No shadow animation.
     whileHover={{
       scale: 1.03,
       transition: { type: "spring", stiffness: 300, damping: 20 },
     }}
-    className="bg-white rounded-xl shadow-sm border border-slate-200 hover:border-indigo-500 transition-colors duration-200 p-4 flex items-center space-x-4 cursor-pointer"
+    className="bg-white rounded-xl shadow-sm border border-slate-200 hover:border-indigo-500 transition-colors duration-200 p-4 flex items-start space-x-4 group relative"
   >
+    <div className="absolute top-3 right-3 flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+      <button
+        onClick={() => onEdit(user)}
+        className="p-1.5 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-800"
+        title="Edit User"
+      >
+        <PencilIcon className="h-4 w-4" />
+      </button>
+      <button
+        onClick={() => onDelete(user.id)}
+        className="p-1.5 rounded-full bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-800"
+        title="Delete User"
+      >
+        <TrashIcon className="h-4 w-4" />
+      </button>
+    </div>
+
     <div
       className={`w-12 h-12 rounded-full flex-shrink-0 ${getColorFromName(
         user.name
@@ -77,12 +93,14 @@ const UserCard = ({ user }) => (
         {getInitials(user.name)}
       </span>
     </div>
-    <div className="w-full flex-1">
+
+    <div className="w-full flex-1 pt-1">
       <h3 className="font-bold text-lg text-slate-800 truncate">{user.name}</h3>
       <p className="text-sm text-indigo-600 flex items-center space-x-2 truncate">
         <EnvelopeIcon className="h-4 w-4 flex-shrink-0" />
         <span>{user.email}</span>
       </p>
+
       <div className="mt-2 pt-2 border-t border-slate-200 flex flex-wrap gap-2 text-xs">
         <span className="bg-slate-100 text-slate-700 font-medium px-2.5 py-1 rounded-full flex items-center space-x-1.5">
           <PhoneIcon className="h-4 w-4" />
@@ -101,17 +119,17 @@ const UserCard = ({ user }) => (
   </motion.div>
 );
 
-const UserGrid = ({ users, loading, error }) => {
+const UserGrid = ({ users, loading, error, onEdit, onDelete }) => {
   if (loading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {" "}
         {Array.from({ length: 6 }).map((_, index) => (
           <UserCardSkeleton key={index} />
-        ))}{" "}
+        ))}
       </div>
     );
   }
+
   if (error) {
     return (
       <div className="text-center p-10 bg-red-50 text-red-700 font-semibold rounded-lg shadow-sm">
@@ -119,16 +137,17 @@ const UserGrid = ({ users, loading, error }) => {
       </div>
     );
   }
+
   if (users.length === 0) {
     return (
       <div className="text-center p-16 bg-white rounded-lg shadow-sm border border-slate-200 text-slate-500">
-        {" "}
-        <DocumentMinusIcon className="h-12 w-12 mx-auto text-slate-400 mb-2" />{" "}
-        <h3 className="text-lg font-semibold">No Results Found</h3>{" "}
-        <p>Try adjusting your search filters.</p>{" "}
+        <DocumentMinusIcon className="h-12 w-12 mx-auto text-slate-400 mb-2" />
+        <h3 className="text-lg font-semibold">No Results Found</h3>
+        <p>Try adjusting your search filters.</p>
       </div>
     );
   }
+
   return (
     <motion.div
       variants={containerVariants}
@@ -136,10 +155,14 @@ const UserGrid = ({ users, loading, error }) => {
       animate="visible"
       className="grid grid-cols-1 md:grid-cols-2 gap-6"
     >
-      {" "}
       {users.map((user) => (
-        <UserCard key={user.id} user={user} />
-      ))}{" "}
+        <UserCard
+          key={user.id}
+          user={user}
+          onEdit={onEdit}
+          onDelete={onDelete}
+        />
+      ))}
     </motion.div>
   );
 };

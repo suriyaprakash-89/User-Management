@@ -4,13 +4,17 @@ import {
   uploadUsers,
   getUsers,
   exportUsers,
-} from "../controllers/userController.js"; 
+  updateUser,
+  deleteUser,
+} from "../controllers/userController.js";
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
 
 router.post("/upload", upload.single("file"), uploadUsers);
 router.get("/", getUsers);
-router.get("/export", exportUsers); 
+router.get("/export", exportUsers);
+router.put("/:id", updateUser);
+router.delete("/:id", deleteUser);
 
 export default router;

@@ -12,3 +12,5 @@ export const fetchUsers = (params) => API.get("/users", { params });
 export const fetchSavedSearches = () => API.get("/searches");
 export const saveSearch = (data) => API.post("/searches", data);
 export const deleteSearch = (id) => API.delete(`/searches/${id}`);
+export const updateUser = (id, updatedData) => API.put(`/users/${id}`, updatedData);
+export const deleteUser = (id) => API.delete(`/users/${id}`);

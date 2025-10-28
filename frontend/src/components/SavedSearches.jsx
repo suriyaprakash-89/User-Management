@@ -113,7 +113,7 @@ const SavedSearches = ({
         </button>
       </form>
       <div className="border-t border-slate-200 pt-4">
-        {/* --- CHANGE THIS `ul` TO `motion.ul` AND ADD `layout` PROP --- */}
+        
         <motion.ul layout className="space-y-2 max-h-60 overflow-y-auto">
           {searches.length > 0 ? (
             searches.map((search) => (

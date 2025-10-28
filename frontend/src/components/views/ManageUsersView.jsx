@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useCallback, useRef } from "react"; // <-- Import useRef
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import SearchBar from "../SearchBar";
 import UserGrid from "../UserGrid";
 import SavedSearches from "../SavedSearches";
 import Pagination from "../Pagination";
-import { fetchUsers } from "../../api";
+import EditUserModal from "../EditUserModal";
+import { fetchUsers, updateUser, deleteUser } from "../../api";
 import { BookmarkIcon } from "@heroicons/react/24/solid";
+import toast from "react-hot-toast";
 
 const PAGE_SIZE = 6;
 
@@ -24,9 +26,10 @@ const ManageUsersView = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
-  // --- STEP 1: Create a ref to mark the top of the content area ---
   const topOfGridRef = useRef(null);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
 
   useEffect(() => {
     if (isDrawerOpen) {
@@ -78,26 +81,69 @@ const ManageUsersView = () => {
     setCurrentPage(1);
   };
 
-  // --- STEP 3: Update the page change handler to include the scroll ---
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    // Smoothly scroll to the top of the grid
     if (topOfGridRef.current) {
       topOfGridRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const handleOpenEditModal = (user) => {
+    setEditingUser(user);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setEditingUser(null);
+  };
+
+  const handleDeleteUser = async (userId) => {
+    const previousUsers = users;
+    setUsers((currentUsers) =>
+      currentUsers.filter((user) => user.id !== userId)
+    );
+    toast.success("User deleted successfully.");
+
+    try {
+      await deleteUser(userId);
+      loadUsers(filters, currentPage);
+    } catch (err) {
+      toast.error("Failed to delete user.");
+      setUsers(previousUsers); 
+    }
+  };
+
+  const handleUpdateUser = async (userId, updatedData) => {
+    const toastId = toast.loading("Updating user...");
+    try {
+      const response = await updateUser(userId, updatedData);
+      setUsers((currentUsers) =>
+        currentUsers.map((user) => (user.id === userId ? response.data : user))
+      );
+      toast.success("User updated successfully.", { id: toastId });
+      handleCloseModal();
+    } catch (err) {
+      toast.error("Failed to update user.", { id: toastId });
     }
   };
 
   return (
     <>
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* --- STEP 2: Attach the ref to the main content container --- */}
         <div
           ref={topOfGridRef}
           className="lg:col-span-8 space-y-6 pb-24 lg:pb-0"
         >
           <SearchBar onSearch={handleFilterChange} initialFilters={filters} />
           <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-            <UserGrid users={users} loading={loading} error={error} />
+            <UserGrid
+              users={users}
+              loading={loading}
+              error={error}
+              onEdit={handleOpenEditModal}
+              onDelete={handleDeleteUser}
+            />
           </div>
           <Pagination
             currentPage={currentPage}
@@ -150,6 +196,12 @@ const ManageUsersView = () => {
           </div>
         )}
       </AnimatePresence>
+      <EditUserModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        user={editingUser}
+        onSave={handleUpdateUser}
+      />
     </>
   );
 };

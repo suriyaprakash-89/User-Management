@@ -303,7 +303,7 @@ const SearchBar = ({ onSearch, initialFilters }) => {
             </button>
             <button
               type="submit"
-              className="w-full justify-center flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+              className="w-full justify-center flex items-center space-x-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors font-semibold"
             >
               <MagnifyingGlassIcon className="h-5 w-5" /> <span>Search</span>
             </button>

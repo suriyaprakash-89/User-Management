@@ -8,9 +8,11 @@ v1.0.0 — October 2025
 
 ### Core Features
 
-- **Excel Data Import:** Seamlessly upload `.xlsx` files with user data.
-- **Duplicate Handling:** Prevents duplicate entries based on email or contact number.
-- **Dynamic Data Grid:** A clean, responsive card grid for displaying users.
+- **Full CRUD Functionality:** Create (via upload), Read (with filtering), **Update**, and **Delete** users directly from the UI.
+- **In-Line Editing:** Seamlessly edit user details via a modal without leaving the page.
+- **Excel Data Import:** Upload `.xlsx` files with a clean drag-and-drop interface.
+- **Robust Duplicate Handling:** Prevents duplicate entries based on email or contact number.
+- **Dynamic Data Grid:** A responsive, animated card grid for displaying users.
 - **Advanced Search & Sort:** Full-text search and filtering, with options to sort the results.
 - **Pagination:** Handles large datasets efficiently with server-side pagination.
 - **Saved Searches:** Save and re-apply common filter combinations.
@@ -82,13 +84,16 @@ FSYS_TASKS/
 
 ## 🌐 API Endpoints Overview
 
-| Method     | Endpoint                  | Description                                                |
-| :--------- | :------------------------ | :--------------------------------------------------------- |
-| **POST**   | `/api/upload`             | Upload an Excel file and import users                      |
-| **GET**    | `/api/users`              | Fetch all users with filters (name, age, gender, location) |
-| **POST**   | `/api/saved-searches`     | Save a new filter/search combination                       |
-| **GET**    | `/api/saved-searches`     | Retrieve saved searches                                    |
-| **DELETE** | `/api/saved-searches/:id` | Delete a saved search                                      |
+| Method     | Endpoint            | Description                                           |
+| :--------- | :------------------ | :---------------------------------------------------- |
+| **POST**   | `/api/users/upload` | Upload an Excel file and import users                 |
+| **GET**    | `/api/users`        | Fetch all users with filters, sorting, and pagination |
+| **GET**    | `/api/users/export` | Export filtered user data to a CSV file               |
+| **PUT**    | `/api/users/:id`    | Update a specific user's details                      |
+| **DELETE** | `/api/users/:id`    | Delete a specific user                                |
+| **POST**   | `/api/searches`     | Save a new filter/search combination                  |
+| **GET**    | `/api/searches`     | Retrieve all saved searches                           |
+| **DELETE** | `/api/searches/:id` | Delete a specific saved search                        |
 
 ---
 
@@ -190,15 +195,14 @@ cd ../frontend && npm install
 
 ## Notes & Future Improvements
 
-I really enjoyed building this project and went beyond the core requirements to add features like pagination, sorting, and CSV export to make it feel like a more complete, real-world application.
+I really enjoyed building this project and went beyond the core requirements to add a full suite of CRUD features, pagination, sorting, and CSV export to make it feel like a complete, real-world application.
 
-If I had more time, here are a few things I'd consider adding:
+If I were to continue developing this project, here are a few things I'd consider adding:
 
-- **User Authentication:** Adding a login system (e.g., with JWT) to secure the platform.
-- **In-line Editing:** Allowing an admin to click on a user card to edit details directly in the UI.
+- **User Authentication:** Adding a login system with JWT to secure the platform.
+- **Dashboard Analytics:** Creating a new view to show charts and stats about the user data (e.g., users by location, age distribution).
+- **Unit & Integration Testing:** Writing tests for the backend API to ensure reliability and prevent regressions.
 - **More Robust Validation:** Using a schema validation library like Zod on the backend for more detailed error messages on upload.
-
----
 
 ## 👨‍💻 Author
 

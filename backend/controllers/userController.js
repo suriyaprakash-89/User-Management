@@ -3,10 +3,11 @@ import {
   processAndStoreUsers,
   fetchUsersWithFilters,
   fetchAllUsersWithFilters,
+  updateUserInDB,
+  deleteUserFromDB,
 } from "../services/userService.js";
 
 export const uploadUsers = async (req, res) => {
-  
   if (!req.file) {
     return res.status(400).json({ message: "No file uploaded." });
   }
@@ -26,7 +27,6 @@ export const uploadUsers = async (req, res) => {
 };
 
 export const getUsers = async (req, res) => {
-  
   try {
     const result = await fetchUsersWithFilters(req.query);
     res.status(200).json(result);
@@ -41,16 +41,13 @@ export const getUsers = async (req, res) => {
 export const exportUsers = async (req, res) => {
   try {
     const users = await fetchAllUsersWithFilters(req.query);
-
     if (users.length === 0) {
       return res
         .status(404)
         .json({ message: "No users found for the selected criteria." });
     }
-
     const json2csvParser = new Parser();
     const csv = json2csvParser.parse(users);
-
     res.header("Content-Type", "text/csv");
     res.attachment("users.csv");
     res.send(csv);
@@ -59,5 +56,31 @@ export const exportUsers = async (req, res) => {
     res
       .status(500)
       .json({ message: "Failed to export users.", error: error.message });
+  }
+};
+
+export const updateUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedUser = await updateUserInDB(id, req.body);
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    console.error("Update User Error:", error);
+    res
+      .status(500)
+      .json({ message: "Failed to update user.", error: error.message });
+  }
+};
+
+export const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await deleteUserFromDB(id);
+    res.status(204).send();
+  } catch (error) {
+    console.error("Delete User Error:", error);
+    res
+      .status(500)
+      .json({ message: "Failed to delete user.", error: error.message });
   }
 };

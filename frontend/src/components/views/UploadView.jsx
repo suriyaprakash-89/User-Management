@@ -139,7 +139,7 @@ const FileUpload = ({ onUploadSuccess }) => {
           whileTap={{ scale: 0.98 }}
           type="submit"
           disabled={uploading || !file}
-          className="w-full flex justify-center items-center space-x-2 bg-slate-800 text-white px-6 py-3 rounded-lg font-semibold hover:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 disabled:bg-slate-400 disabled:cursor-not-allowed transition-colors"
+          className="w-full flex justify-center items-center space-x-2 bg-indigo-800 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 disabled:bg-slate-400 disabled:cursor-not-allowed transition-colors"
         >
           <span>{uploading ? "Processing..." : "Upload & Import"}</span>
         </motion.button>

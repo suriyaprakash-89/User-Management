@@ -57,13 +57,20 @@ const FileUpload = ({ onUploadSuccess }) => {
 
     try {
       const response = await uploadFile(formData);
-      const { insertedCount, duplicates, invalidRows } = response.data;
+      const { insertedCount, insertedUsers, duplicates, invalidRows } =
+        response.data;
 
       toast.dismiss(toastId);
       toast.success(`${insertedCount} user(s) imported successfully.`);
 
-      setUploadResult({ insertedCount, duplicates, invalidRows });
+      setUploadResult({
+        insertedCount,
+        insertedUsers,
+        duplicates,
+        invalidRows,
+      });
 
+  
       onUploadSuccess();
     } catch (err) {
       toast.dismiss(toastId);
@@ -84,6 +91,7 @@ const FileUpload = ({ onUploadSuccess }) => {
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
+
         <label
           htmlFor="file-upload"
           onDragOver={(e) => handleDragEvents(e, true)}
@@ -154,15 +162,31 @@ const FileUpload = ({ onUploadSuccess }) => {
           <h3 className="text-lg font-semibold text-slate-800">
             Import Summary
           </h3>
-          <div className="mt-2 p-4 bg-green-50 rounded-lg border border-green-200">
-            <div className="flex items-center space-x-3">
-              <CheckCircleIcon className="h-6 w-6 text-green-500" />
-              <p className="font-semibold text-green-800">
-                {uploadResult.insertedCount} user(s) imported successfully.
-              </p>
-            </div>
-          </div>
 
+          
+          {uploadResult.insertedUsers &&
+            uploadResult.insertedUsers.length > 0 && (
+              <div className="mt-2 p-4 bg-green-50 rounded-lg border border-green-200">
+                <details open>
+                  <summary className="font-semibold text-green-800 cursor-pointer flex items-center space-x-3">
+                    <CheckCircleIcon className="h-6 w-6 text-green-500" />
+                    <span>
+                      {uploadResult.insertedCount} user(s) imported
+                      successfully.
+                    </span>
+                  </summary>
+                  <ul className="mt-3 pl-8 text-sm text-slate-600 list-disc space-y-1 max-h-40 overflow-y-auto">
+                    {uploadResult.insertedUsers.map((user, index) => (
+                      <li key={index}>
+                        <span className="font-medium">{user.Name}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              </div>
+            )}
+
+          
           {uploadResult.duplicates && uploadResult.duplicates.length > 0 && (
             <div className="mt-4 p-4 bg-amber-50 rounded-lg border border-amber-200">
               <details open>
@@ -185,6 +209,7 @@ const FileUpload = ({ onUploadSuccess }) => {
             </div>
           )}
 
+          
           {uploadResult.invalidRows && uploadResult.invalidRows.length > 0 && (
             <div className="mt-4 p-4 bg-rose-50 rounded-lg border border-rose-200">
               <details open>

@@ -34,7 +34,6 @@ export const processAndStoreUsers = async (fileBuffer) => {
   const usersToInsert = [];
   const duplicates = [];
   const invalidRows = [];
-
   const seenInFileEmails = new Set();
   const seenInFileContacts = new Set();
 
@@ -46,7 +45,6 @@ export const processAndStoreUsers = async (fileBuffer) => {
       });
       continue;
     }
-
     const contactStr = String(row.ContactNumber);
     if (
       existingEmailsInDB.has(row.Email) ||
@@ -91,8 +89,12 @@ export const processAndStoreUsers = async (fileBuffer) => {
       client.release();
     }
   }
-
-  return { insertedCount: usersToInsert.length, duplicates, invalidRows };
+  return {
+    insertedCount: usersToInsert.length,
+    insertedUsers: usersToInsert,
+    duplicates,
+    invalidRows,
+  };
 };
 
 export const fetchUsersWithFilters = async (filters) => {

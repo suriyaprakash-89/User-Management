@@ -27,7 +27,6 @@ const ManageUsersView = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const topOfGridRef = useRef(null);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
 
@@ -99,28 +98,28 @@ const ManageUsersView = () => {
   };
 
   const handleDeleteUser = async (userId) => {
-    const previousUsers = users;
-    setUsers((currentUsers) =>
-      currentUsers.filter((user) => user.id !== userId)
-    );
-    toast.success("User deleted successfully.");
+    const promise = deleteUser(userId);
 
-    try {
-      await deleteUser(userId);
-      loadUsers(filters, currentPage);
-    } catch (err) {
-      toast.error("Failed to delete user.");
-      setUsers(previousUsers); 
-    }
+    toast.promise(promise, {
+      loading: "Deleting user...",
+      success: () => {
+        if (users.length === 1 && currentPage > 1) {
+          setCurrentPage(currentPage - 1);
+        } else {
+          loadUsers(filters, currentPage);
+        }
+        return "User deleted successfully.";
+      },
+      error: "Failed to delete user.",
+    });
   };
 
   const handleUpdateUser = async (userId, updatedData) => {
     const toastId = toast.loading("Updating user...");
     try {
       const response = await updateUser(userId, updatedData);
-      setUsers((currentUsers) =>
-        currentUsers.map((user) => (user.id === userId ? response.data : user))
-      );
+      
+      loadUsers(filters, currentPage);
       toast.success("User updated successfully.", { id: toastId });
       handleCloseModal();
     } catch (err) {

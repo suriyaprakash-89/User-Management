@@ -107,7 +107,7 @@ const FileUpload = ({ onUploadSuccess }) => {
             <ArrowUpTrayIcon className="w-12 h-12 mx-auto text-slate-400" />
             <span className="mt-2 block font-semibold text-slate-600">
               Drag & drop a file here or
-              <span className="text-indigo-600">click to browse</span>
+              <span className="text-indigo-600"> click to browse</span>
             </span>
             <span className="mt-1 block text-xs text-slate-500">
               Supported formats: XLSX, XLS

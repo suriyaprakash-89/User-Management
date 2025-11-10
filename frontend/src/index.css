@@ -6,7 +6,7 @@
 body {
   @apply bg-slate-50 text-slate-800;
   background-image: radial-gradient(
-    theme(colors.slate.200) 1px,
+    theme("colors.slate.200") 1px,
     transparent 1px
   );
   background-size: 16px 16px;
